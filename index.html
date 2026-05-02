@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.min.css">
+
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1 id="titulo">✦ Gestor de Tareas</h1>
+        <p class="subtitulo">Administrá las tareas de tu proyecto fácilmente</p>
+
+        <div class="tarjeta">
+            <div class="tarjeta-titulo">◈ Nueva Tarea</div>
+
+            <form id="formTarea">
+                <div class="form-grid">
+
+                    <div class="campo">
+                        <label for="nombreTarea">Nombre de la tarea</label>
+                        <input type="text" id="nombreTarea" placeholder="Ej: Diseñar mockup de login...">
+                    </div>
+
+                    <div class="campo">
+                        <label for="prioridad">Prioridad</label>
+                        <select id="prioridad">
+                            <option value="Alta">🟢 Alta</option>
+                            <option value="Media">🟡 Media</option>
+                            <option value="Baja">⚪ Baja</option>
+                        </selec>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px;">
+                    <button type="submit" class="btn btn-agregar">+ Agregar Tarea</button>
+                <div class="alerta" id="mensajeError">⚠️ El nombre de la tarea no puede estar vacío.</div>
+            </div>
+      </form>
+    </div>
+
+    <div class="tarjeta tabla-wrap">
+        <div class="tarjeta-titulo">
+        ◈ Lista de Tareas
+            <span class="contador" id="contadorTareas">0</span>
+        </div>
+
+        <table id="tablaTareas" class="display">
+            <thead>
+                <tr>
+                    <th>Tarea</th>
+                    <th>Prioridad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="jquery-4.0.0.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
