@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+  // Inicialización de DataTables con el id de tablatareas con opciones personalizadas y estilos para el contador de tareas 
   var tabla = $('#tablaTareas').DataTable({
     language: {
       search:      "Buscar:",
@@ -17,6 +17,43 @@ $(document).ready(function () {
     ],
     pageLength: 5
   });
+
+  var tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+
+  function guardarTareas() {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+  }
+
+  function actualizarContador() {
+    $('#contadorTareas').text(tabla.rows().count());
+  }
+
+  function crearFilaTarea(tarea) {
+    return `
+      <tr style="display:none">
+        <td>${tarea.nombre}</td>
+        <td>
+          <span class="badge ${tarea.claseBadge}">
+            ${tarea.iconoBadge} ${tarea.prioridad}
+          </span>
+        </td>
+        <td>
+          <button class="btn btn-eliminar">✕ Eliminar</button>
+        </td>
+      </tr>
+    `;
+  }
+
+  function cargarTareas() {
+    tareas.forEach(function (tarea) {
+      var filaAgregada = tabla.row.add($(crearFilaTarea(tarea))).draw(false).node();
+      $(filaAgregada).fadeIn(0);
+    });
+    actualizarContador();
+  }
+
+  $('#mensajeError').hide();
+  cargarTareas();
 
   $('#titulo').hover(
     function () {
@@ -62,24 +99,20 @@ $(document).ready(function () {
       iconoBadge = '🟡';
     }
 
-    var nuevaFila = `
-      <tr style="display:none">
-        <td>${nombreTarea}</td>
-        <td>
-          <span class="badge ${claseBadge}">
-            ${iconoBadge} ${prioridad}
-          </span>
-        </td>
-        <td>
-          <button class="btn btn-eliminar">✕ Eliminar</button>
-        </td>
-      </tr>
-    `;
+    var tareaObj = {
+      nombre: nombreTarea,
+      prioridad: prioridad,
+      claseBadge: claseBadge,
+      iconoBadge: iconoBadge
+    };
 
-    var filaAgregada = tabla.row.add($(nuevaFila)).draw().node();
+    tareas.push(tareaObj);
+    guardarTareas();
+
+    var filaAgregada = tabla.row.add($(crearFilaTarea(tareaObj))).draw().node();
     $(filaAgregada).fadeIn(400);
 
-    $('#contadorTareas').text(tabla.rows().count());
+    actualizarContador();
 
     $('#nombreTarea').val('');
     $('#prioridad').val('Alta');
@@ -87,10 +120,23 @@ $(document).ready(function () {
 
   $('#tablaTareas').on('click', '.btn-eliminar', function () {
     var fila = $(this).closest('tr');
+    var nombreEliminar = fila.find('td:eq(0)').text();
+    var prioridadEliminar = fila.find('td:eq(1) .badge').text().trim();
+    var eliminado = false;
+
+    tareas = tareas.filter(function (item) {
+      if (!eliminado && item.nombre === nombreEliminar && `${item.iconoBadge} ${item.prioridad}` === prioridadEliminar) {
+        eliminado = true;
+        return false;
+      }
+      return true;
+    });
+
+    guardarTareas();
+
     fila.fadeOut(300, function () {
       tabla.row(fila).remove().draw();
-      $('#contadorTareas').text(tabla.rows().count());
+      actualizarContador();
     });
   });
-
 });
